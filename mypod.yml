@@ -19,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: web-pv-claim
+  name: mypvc
   labels:
     app: web
 spec:
@@ -27,12 +27,12 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: webdeploy
+  name: mypod
   labels:
     app: web
 spec:
@@ -49,15 +49,15 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: vimal13/apache-webserver-php
+      - image: httpd
         name: webcon
         ports:
         - containerPort: 80
           name: webport
         volumeMounts:
         - name: web-persistent-volume 
-          mountPath: /var/www/html
+          mountPath: /usr/local/apache2/htdocs
       volumes:
       - name: web-persistent-volume
         persistentVolumeClaim:
-          claimName: web-pv-claim
+          claimName: mypvc
